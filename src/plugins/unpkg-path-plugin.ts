@@ -1,5 +1,11 @@
 import * as esbuild from 'esbuild-wasm';
 import axios from 'axios';
+import localForage from 'localforage';
+
+
+const fileCache = localForage.createInstance({
+    name: "fileCache"
+});
 
 export const unpkgPathPlugin = () => {
 	return {
@@ -45,15 +51,27 @@ export const unpkgPathPlugin = () => {
 					};
 				}
 
+                // Check to see if we have already fetched this file and if it is in the cache.
+                const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(args.path);
+
+                // If it is, return it immediately.
+                if (cachedResult) {
+                    return cachedResult;
+                }
+
                 const { data, request } = await axios.get(args.path);
                 // In request there is the responseURL property which tells us where we got redirected to.
                 // From the URL we will get the pathname (1st arg './')
-                return {
+                const result: esbuild.OnLoadResult = {
                     loader: 'jsx',
                     contents: data,
                     // Where we found the last file we were looking for passed to onResolve
                     resolveDir: new URL('./', request.responseURL).pathname
                 }
+                //store response in cache
+                await fileCache.setItem(args.path, result);
+
+                return result;
 			});
 		},
 	};

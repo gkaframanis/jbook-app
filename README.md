@@ -6,3 +6,8 @@
 - The ***esbuild.wasm*** file inside the esbuild-wasm node_module is the compiled Go code that correctly work inside the browser. We copy & paste it in the public folder.
 
 ***npm view react dist.tarball*** in command line to get a link with all the source code of react.
+
+## indexedDB
+Similar to local storage but we can store a lot more of information inside.
+- We will use a helper library ==> ***localforage***
+  - keyvaluepairs
