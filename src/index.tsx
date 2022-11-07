@@ -16,7 +16,7 @@ const App = () => {
         ref.current = await esbuild.startService({
             worker: true,
             // Go to the public and find the binary
-            wasmURL: '/esbuild.wasm'
+            wasmURL: 'https://unpkg.com/esbuild-wasm@0.8.27/esbuild.wasm'
         });
         // We are gonna use the build (bundle) and transform (transpile) functions of the service.
     };
